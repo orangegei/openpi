@@ -71,24 +71,8 @@ def init_logging():
 
 def init_wandb(config: _config.TrainConfig, *, resuming: bool, enabled: bool = True):
     """Initialize wandb logging."""
-    if not enabled:
-        wandb.init(mode="disabled")
-        return
-
-    ckpt_dir = config.checkpoint_dir
-    if not ckpt_dir.exists():
-        raise FileNotFoundError(f"Checkpoint directory {ckpt_dir} does not exist.")
-
-    if resuming:
-        run_id = (ckpt_dir / "wandb_id.txt").read_text().strip()
-        wandb.init(id=run_id, resume="must", project=config.project_name)
-    else:
-        wandb.init(
-            name=config.exp_name,
-            config=dataclasses.asdict(config),
-            project=config.project_name,
-        )
-        (ckpt_dir / "wandb_id.txt").write_text(wandb.run.id)
+    # Fixed to W&B prompt option 3: don't visualize results.
+    wandb.init(mode="disabled")
 
 
 def setup_ddp():
